@@ -1,3 +1,14 @@
 from django.db import models
 
-# Create your models here.
+class TheatreHall(models.Model):
+    name = models.CharField(max_length=63)
+    rows = models.IntegerField()
+    seats_in_row = models.IntegerField()
+
+    @property
+    def capacity(self):
+        return self.rows * self.seats_in_row
+
+    def __str__(self):
+        return f"Hall {self.name} has {self.capacity} seats"
+
