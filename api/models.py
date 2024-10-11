@@ -19,3 +19,12 @@ class Play(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Actor(models.Model):
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    play = models.ManyToManyField(Play, related_name="actors")
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
