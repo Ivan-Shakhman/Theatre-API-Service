@@ -32,6 +32,7 @@ class Actor(models.Model):
 
 class Genre(models.Model):
     name = models.CharField(max_length=255)
+    play = models.ManyToManyField(Play, related_name="genres")
 
     def __str__(self):
         return self.name
