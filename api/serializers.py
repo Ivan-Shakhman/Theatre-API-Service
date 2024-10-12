@@ -9,12 +9,6 @@ class TheatreHallSerializer(serializers.ModelSerializer):
         fields = ("name", "rows", "seats_in_row", "capacity")
 
 
-class PlaySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Play
-        fields = ("title", "description", "genres")
-
-
 class ActorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Actor
@@ -27,6 +21,34 @@ class GenreSerializer(serializers.ModelSerializer):
         fields = ("name",)
 
 
+class PlaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Play
+        fields = ("title", "description", "genres", "actors")
+
+
+class PlayListSerializer(PlaySerializer):
+    genres = serializers.SlugRelatedField(
+        many=True, read_only=True, slug_field="name"
+    )
+    actors = serializers.SlugRelatedField(
+        many=True, read_only=True, slug_field="full_name"
+    )
+
+    class Meta:
+        model = Play
+        fields = ("title", "description", "genres", "actors")
+
+
+class PlayDetailSerializer(PlaySerializer):
+    genres = GenreSerializer(many=True, read_only=True)
+    actors = ActorSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Play
+        fields = ("title", "description", "genres", "actors")
+
+
 class PerformanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Performance
@@ -34,4 +56,22 @@ class PerformanceSerializer(serializers.ModelSerializer):
 
 
 class PerformanceListSerializer(PerformanceSerializer):
+    theatre_hall = serializers.SlugRelatedField(
+        read_only=True, slug_field="name"
+    )
+    play = serializers.SlugRelatedField(
+        read_only=True, slug_field="title"
+    )
 
+    class Meta:
+        model = Performance
+        fields = ("play", "theatre_hall", "show_time")
+
+
+class PerformanceDetailSerializer(PerformanceSerializer):
+    theatre_hall = TheatreHallSerializer(read_only=True)
+    play = PlaySerializer(read_only=True)
+
+    class Meta:
+        model = Performance
+        fields = ("theatre_hall", "play", "show_time")
