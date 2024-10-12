@@ -75,14 +75,12 @@ class ReservationViewSet(
     mixins.RetrieveModelMixin,
     GenericViewSet
 ):
-    queryset = Reservation.objects.select_related("tickets")
+    queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
 
     def get_serializer_class(self):
         if self.action == "list":
             return ReservationListSerializer
-        if self.action == "retrieve":
-            return PerformanceDetailSerializer
         return ReservationSerializer
 
     def get_queryset(self):
