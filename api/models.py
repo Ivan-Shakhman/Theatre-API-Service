@@ -14,9 +14,17 @@ class TheatreHall(models.Model):
         return f"Hall {self.name} has {self.capacity} seats"
 
 
+class Genre(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
 class Play(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
+    genre = models.ManyToManyField(Genre, related_name="genres")
 
     def __str__(self):
         return self.title
@@ -31,12 +39,6 @@ class Actor(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 
-class Genre(models.Model):
-    name = models.CharField(max_length=255)
-    play = models.ManyToManyField(Play, related_name="genres")
-
-    def __str__(self):
-        return self.name
 
 
 class Performance(models.Model):
