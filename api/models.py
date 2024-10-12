@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.db import models
+from rest_framework.exceptions import ValidationError
+
 
 class TheatreHall(models.Model):
     name = models.CharField(max_length=63)
@@ -62,3 +64,38 @@ class Ticket(models.Model):
     seat = models.IntegerField()
     performance = models.ForeignKey(Performance, on_delete=models.CASCADE)
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
+
+    @staticmethod
+    def validate_ticket(row, seat, theatre_hall, errors):
+        for ticket_attr_value, ticket_attr_name, theatre_hall_attr_name in[
+            (row, "row", "rows"),
+            (seat, "seat", "seats_in_row"),
+        ]:
+            count_attrs =getattr(theatre_hall, theatre_hall_attr_name)
+            if not (1 <= ticket_attr_value <= count_attrs):
+                raise errors({
+                    ticket_attr_name: f"{ticket_attr_name} not in {count_attrs} "
+                    f"number must be in available range: "
+                    f"(1, {theatre_hall_attr_name}): "
+                    f"(1, {count_attrs})"
+                })
+
+    def clean(self):
+        Ticket.validate_ticket(
+            self.row,
+            self.seat,
+            self.performance.theatre_hall,
+            ValidationError
+        )
+
+    def save(
+        self,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None,
+    ):
+        self.full_clean()
+        return super(Ticket, self).save(
+            force_insert, force_update, using, update_fields
+        )
