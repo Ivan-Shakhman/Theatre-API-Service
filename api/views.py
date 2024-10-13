@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import render
 from rest_framework import viewsets, mixins
 from rest_framework.permissions import IsAuthenticated
@@ -68,6 +70,17 @@ class PerformanceViewSet(
         if self.action == "retrieve":
             return PerformanceDetailSerializer
         return PerformanceSerializer
+
+    def get_queryset(self):
+        query_set = self.queryset
+        date = self.request.query_params.get("date")
+        play_id = self.request.query_params.get("play")
+        if date:
+            date = datetime.strptime(date, "%d-%m-%Y").date()
+            query_set = query_set.filter(show_time__date=date)
+        if play_id:
+            query_set = query_set.filter(play_id=play_id)
+        return query_set.distinct()
 
 
 class ReservationViewSet(

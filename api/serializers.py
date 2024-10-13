@@ -53,6 +53,7 @@ class PlayDetailSerializer(PlaySerializer):
 
 
 class PerformanceSerializer(serializers.ModelSerializer):
+    show_time = serializers.DateTimeField(format="%d-%m-%Y %H:%M")
     class Meta:
         model = Performance
         fields = ("play", "theatre_hall", "show_time")
@@ -122,7 +123,7 @@ class TicketDetailSerializer(TicketSerializer):
 
 
 class ReservationSerializer(serializers.ModelSerializer):
-    tickets = TicketSerializer(many=True, read_only=False, )
+    tickets = TicketSerializer(many=True, read_only=False, allow_empty=False)
 
     class Meta:
         model = Reservation
