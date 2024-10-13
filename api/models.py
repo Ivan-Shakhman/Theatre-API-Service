@@ -7,6 +7,8 @@ from django.db.models import UniqueConstraint
 from django.utils.text import slugify
 from rest_framework.exceptions import ValidationError
 
+from api.requests import get_wikipedia_article
+
 
 class TheatreHall(models.Model):
     name = models.CharField(max_length=63)
@@ -64,6 +66,10 @@ class Play(models.Model):
 
     class Meta:
         ordering = ("title",)
+
+    @property
+    def wiki_article(self):
+        return get_wikipedia_article(self.title)
 
     def __str__(self):
         return self.title
