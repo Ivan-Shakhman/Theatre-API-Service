@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from api.models import Genre, Actor, TheatreHall, Play, Performance, Reservation
+from api.paginations import PlayPagination, ActorPagination, PerformancePagination, ReservationPagination
 from api.serializers import GenreSerializer, ActorSerializer, TheatreHallSerializer, PlaySerializer, PlayListSerializer, \
     PlayDetailSerializer, PerformanceSerializer, PerformanceListSerializer, PerformanceDetailSerializer, \
     ReservationSerializer, ReservationListSerializer
@@ -27,6 +28,7 @@ class ActorViewSet(
 ):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
+    pagination_class = ActorPagination
 
 
 class TheatreHallViewSet(
@@ -46,6 +48,7 @@ class PlayViewSet(
 ):
     queryset = Play.objects.prefetch_related("genres", "actors")
     serializer_class = PlaySerializer
+    pagination_class = PlayPagination
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -85,6 +88,7 @@ class PerformanceViewSet(
 ):
     queryset = Performance.objects.select_related("theatre_hall", "play")
     serializer_class = PerformanceSerializer
+    pagination_class = PerformancePagination
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -113,6 +117,7 @@ class ReservationViewSet(
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
     permission_classes = (IsAuthenticated,)
+    pagination_class = ReservationPagination
 
     def get_serializer_class(self):
         if self.action == "list":
