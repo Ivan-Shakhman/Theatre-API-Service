@@ -54,6 +54,28 @@ class PlayViewSet(
             return PlayDetailSerializer
         return PlaySerializer
 
+    @staticmethod
+    def _str_query_param_to_int(param):
+        return [int(obj_id) for obj_id in param.split(",")]
+
+    def get_queryset(self):
+        queryset = self.queryset.prefetch_related("genres", "actors")
+        title = self.request.query_params.get("title", None)
+        genres = self.request.query_params.get("genres", None)
+        actors = self.request.query_params.get("actors", None)
+
+        if title:
+            queryset = queryset.filter(title__icontains=title)
+
+        if genres:
+            genres_ids = self._str_query_param_to_int(genres)
+            queryset = queryset.filter(genres__id__in=genres_ids)
+
+        if actors:
+            actors_ids = self._str_query_param_to_int(actors)
+            queryset = queryset.filter(actors__id__in=actors_ids)
+        return queryset
+
 
 class PerformanceViewSet(
     mixins.ListModelMixin,
