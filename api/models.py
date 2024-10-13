@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.db.models import UniqueConstraint
 from rest_framework.exceptions import ValidationError
 
 
@@ -7,6 +8,9 @@ class TheatreHall(models.Model):
     name = models.CharField(max_length=63)
     rows = models.IntegerField()
     seats_in_row = models.IntegerField()
+
+    class Meta:
+        ordering = ("name",)
 
     @property
     def capacity(self):
@@ -19,6 +23,9 @@ class TheatreHall(models.Model):
 class Genre(models.Model):
     name = models.CharField(max_length=255)
 
+    class Meta:
+        ordering = ("name",)
+
     def __str__(self):
         return self.name
 
@@ -26,6 +33,9 @@ class Genre(models.Model):
 class Actor(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
+
+    class Meta:
+        ordering = ("last_name", "first_name")
 
     @property
     def full_name(self):
@@ -41,11 +51,11 @@ class Play(models.Model):
     genres = models.ManyToManyField(Genre, related_name="genres")
     actors = models.ManyToManyField(Actor, related_name="actors")
 
+    class Meta:
+        ordering = ("title",)
+
     def __str__(self):
         return self.title
-
-
-
 
 
 class Performance(models.Model):
@@ -53,10 +63,16 @@ class Performance(models.Model):
     theatre_hall = models.ForeignKey(TheatreHall, on_delete=models.CASCADE)
     show_time = models.DateTimeField()
 
+    class Meta:
+        ordering = ("play",)
+
 
 class Reservation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ("-created_at",)
 
 
 class Ticket(models.Model):
@@ -64,6 +80,16 @@ class Ticket(models.Model):
     seat = models.IntegerField()
     performance = models.ForeignKey(Performance, on_delete=models.CASCADE)
     reservation = models.ForeignKey(Reservation, related_name="tickets", on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=[
+                    "row", "seat", "performance",
+                ],
+                name="unique_ticket"
+            )
+        ]
 
     @staticmethod
     def validate_ticket(row, seat, theatre_hall, errors):

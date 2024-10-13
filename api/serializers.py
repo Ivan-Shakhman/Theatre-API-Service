@@ -84,6 +84,26 @@ class TicketSerializer(serializers.ModelSerializer):
         model = Ticket
         fields = ("row", "seat", "performance")
 
+    def validate(self, data):
+        if Ticket.objects.filter(
+                row=data["row"],
+                seat=data["seat"],
+                performance=data["performance"]
+        ).exists():
+            raise serializers.ValidationError(
+                f"Ticket with row-{data['row']}, seat-{data['seat']} "
+                f"already exists for performance {data['performance']}."
+            )
+        performance = data["performance"]
+        theatre_hall = performance.theatre_hall
+        Ticket.validate_ticket(
+            data["row"],
+            data["seat"],
+            theatre_hall,
+            serializers.ValidationError
+        )
+        return data
+
 
 class TicketListSerializer(TicketSerializer):
     performance = serializers.SlugRelatedField(
