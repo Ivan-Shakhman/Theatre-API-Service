@@ -1,5 +1,6 @@
 from django.db import transaction
 from rest_framework import serializers
+from rest_framework.generics import get_object_or_404
 
 from api.models import TheatreHall, Play, Actor, Genre, Performance, Ticket, Reservation
 
@@ -78,23 +79,23 @@ class PerformanceDetailSerializer(PerformanceSerializer):
         model = Performance
         fields = ("theatre_hall", "play", "show_time")
 
-
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = ("row", "seat", "performance")
 
     def validate(self, data):
+        performance = data["performance"]
         if Ticket.objects.filter(
                 row=data["row"],
                 seat=data["seat"],
-                performance=data["performance"]
+                performance=performance
         ).exists():
             raise serializers.ValidationError(
                 f"Ticket with row-{data['row']}, seat-{data['seat']} "
-                f"already exists for performance {data['performance']}."
+                f"already exists for performance {performance}."
             )
-        performance = data["performance"]
+
         theatre_hall = performance.theatre_hall
         Ticket.validate_ticket(
             data["row"],
@@ -106,9 +107,6 @@ class TicketSerializer(serializers.ModelSerializer):
 
 
 class TicketListSerializer(TicketSerializer):
-    performance = serializers.SlugRelatedField(
-        many=True, read_only=True, slug_field="title"
-    )
 
     class Meta:
         model = Ticket
@@ -124,22 +122,20 @@ class TicketDetailSerializer(TicketSerializer):
 
 
 class ReservationSerializer(serializers.ModelSerializer):
-    tickets = TicketSerializer(
-        many=True,
-        read_only=False,
-        allow_empty=False
-    )
+    tickets = TicketSerializer(many=True, read_only=False, )
 
     class Meta:
         model = Reservation
-        fields = ("user", "created_at", "tickets")
+        fields = ("created_at", "tickets")
 
     def create(self, validated_data):
         with transaction.atomic():
             tickets_data = validated_data.pop("tickets")
             reservation = Reservation.objects.create(**validated_data)
+
             for ticket_data in tickets_data:
-                Ticket.objects.create(**ticket_data, reservation=reservation)
+
+                Ticket.objects.create(reservation=reservation, **ticket_data)
             return reservation
 
 

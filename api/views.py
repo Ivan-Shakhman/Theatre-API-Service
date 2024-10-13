@@ -73,7 +73,6 @@ class PerformanceViewSet(
 class ReservationViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
-    mixins.RetrieveModelMixin,
     GenericViewSet
 ):
     queryset = Reservation.objects.all()
@@ -87,6 +86,7 @@ class ReservationViewSet(
 
     def get_queryset(self):
         query_set = self.queryset.filter(user=self.request.user)
+        return query_set
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
