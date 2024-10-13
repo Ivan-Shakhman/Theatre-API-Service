@@ -27,7 +27,7 @@ class PlaySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Play
-        fields = ("title", "description", "genres", "actors")
+        fields = ("title", "description", "image", "genres", "actors")
 
 
 class PlayListSerializer(PlaySerializer):
@@ -40,7 +40,7 @@ class PlayListSerializer(PlaySerializer):
 
     class Meta:
         model = Play
-        fields = ("title", "description", "genres", "actors")
+        fields = ("title", "genres", "actors")
 
 
 class PlayDetailSerializer(PlaySerializer):
@@ -49,7 +49,7 @@ class PlayDetailSerializer(PlaySerializer):
 
     class Meta:
         model = Play
-        fields = ("title", "description", "genres", "actors")
+        fields = ("title", "description", "image", "genres", "actors")
 
 
 class PerformanceSerializer(serializers.ModelSerializer):
