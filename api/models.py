@@ -1,6 +1,10 @@
+import os
+import uuid
+
 from django.conf import settings
 from django.db import models
 from django.db.models import UniqueConstraint
+from django.utils.text import slugify
 from rest_framework.exceptions import ValidationError
 
 
@@ -45,9 +49,16 @@ class Actor(models.Model):
         return self.full_name
 
 
+def play_image_file_path(instance, filename):
+    _, extension = os.path.splitext(filename)
+    filename =f"{slugify(instance.name)}-{uuid.uuid4()}{extension}"
+    return os.path.join("uploads/movies/", filename)
+
+
 class Play(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
+    image = models.ImageField(upload_to=play_image_file_path, null=True)
     genres = models.ManyToManyField(Genre, related_name="genres")
     actors = models.ManyToManyField(Actor, related_name="actors")
 
