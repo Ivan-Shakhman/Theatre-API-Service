@@ -29,12 +29,17 @@ def actor_fixture(**kwargs):
 
 
 def play_fixture(**kwargs):
+    genres = genre_fixture(name="another genre"), genre_fixture()
+    actors = actor_fixture(
+        first_name="another first name",
+        last_name="another last name",
+    ), actor_fixture()
     play_set_up = {
         "title": "Test play title",
         "description": "Test play description",
         "image": None,
-        "genres": (1, 2),
-        "actors": (1, 2),
+        "genres": genres,
+        "actors": actors,
     }
     play_set_up.update(kwargs)
     return Play.objects.create(**play_set_up)
@@ -42,8 +47,8 @@ def play_fixture(**kwargs):
 
 def performance_fixture(**kwargs):
     performance_set_up = {
-        "performance": 1,
-        "theatre_hall": 1,
+        "performance": play_fixture(),
+        "theatre_hall": theatre_hall_fixture(),
         "show_time": "2024-10-14-22-06"
     }
     performance_set_up.update(kwargs)
