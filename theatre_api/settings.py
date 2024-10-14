@@ -149,6 +149,7 @@ REST_FRAMEWORK = {
         "anon": "10/minute",
         "user": "20/minute",
     },
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": (
  	    "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
