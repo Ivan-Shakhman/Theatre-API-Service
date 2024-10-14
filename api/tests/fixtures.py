@@ -1,4 +1,18 @@
-from api.models import TheatreHall, Genre, Actor, Play, Performance
+from django.contrib.auth import get_user_model
+from rest_framework.test import APIClient
+
+from api.models import TheatreHall, Genre, Actor, Play, Performance, Reservation
+
+
+def user_fixture(**kwargs):
+    client = APIClient()
+    user_data = {
+        "email": "test@test.com",
+        "password": "testpass",
+    }
+    user_data.update(kwargs)
+    user = get_user_model().objects.create_user(**user_data)
+    client.force_authenticate(user)
 
 
 def theatre_hall_fixture(**kwargs):
@@ -54,3 +68,19 @@ def performance_fixture(**kwargs):
     performance_set_up.update(kwargs)
     return Performance.objects.create(**performance_set_up)
 
+
+def reservation_fixture(**kwargs):
+    reservation_set_up = {
+        "user": user_fixture(),
+    }
+    reservation_set_up.update(kwargs)
+    return Reservation.objects.create(**reservation_set_up)
+
+
+def ticket_fixture(**kwargs):
+    ticket_set_up = {
+        "row": 1,
+        "seat": 1,
+        "performance": performance_fixture(),
+        "reservation": reservation_fixture(),
+    }
