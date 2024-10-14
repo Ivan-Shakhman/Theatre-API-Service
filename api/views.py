@@ -1,6 +1,8 @@
 from datetime import datetime
 
 from django.shortcuts import render
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -88,7 +90,7 @@ class PlayViewSet(
         permission_classes=[IsAdminUser],
     )
     def upload_image(self, request, pk=None):
-        """Endpoint for uploading image to specific movie"""
+        """Endpoint for uploading image to specific play"""
         movie = self.get_object()
         serializer = self.get_serializer(movie, data=request.data)
 
@@ -126,6 +128,23 @@ class PerformanceViewSet(
         if play_id:
             query_set = query_set.filter(play_id=play_id)
         return query_set.distinct()
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "date",
+                type=OpenApiTypes.DATETIME,
+                description="Filtering by date",
+            ),
+            OpenApiParameter(
+                "play",
+                type=OpenApiTypes.INT,
+                description="Filtering by play ids",
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class ReservationViewSet(
