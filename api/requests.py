@@ -16,15 +16,10 @@ def get_wikipedia_article(title):
     if response.status_code == 200:
         data = response.json()
 
-        page = next(iter(data['query']['pages'].values()))
+        page = next(iter(data["query"]["pages"].values()))
         if "extract" in page:
-            return page['extract']
+            return page["extract"]
         else:
             return "Article not found."
     else:
         return f"Error: {response.status_code}"
-
-
-if __name__ == "__main__":
-    article = get_wikipedia_article("Romeo and Juliet")
-    print(article)
