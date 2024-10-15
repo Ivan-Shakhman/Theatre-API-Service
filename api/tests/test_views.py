@@ -7,7 +7,7 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from api.models import Genre, Actor, TheatreHall, Play, Performance
+from api.models import Genre, Actor, TheatreHall, Play, Performance, Reservation, Ticket
 from api.tests.fixtures import genre_fixture, actor_fixture, theatre_hall_fixture, play_fixture
 
 PLAY_URL = reverse("api:play-list")
@@ -149,3 +149,40 @@ class PerformanceViewSetTest(TestCase):
         self.assertEqual(response.data["play"]["title"], "Test play title")
 
 
+class ReservationViewSetTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(
+            "testuser@example.com",
+            "password"
+        )
+        self.client.force_authenticate(self.user)
+
+        self.play = play_fixture()
+        self.theatre_hall = theatre_hall_fixture()
+        self.performance = Performance.objects.create(
+            play=self.play,
+            theatre_hall=self.theatre_hall,
+            show_time=datetime.now()
+        )
+        self.reservation_url = reverse("api:reservation-list")
+        self.reservation_data = {
+            "tickets": [
+                {"row": 1, "seat": 1, "performance": self.performance.id},
+                {"row": 1, "seat": 2, "performance": self.performance.id}
+            ]
+        }
+
+    def test_list_reservations(self):
+        response = self.client.get(self.reservation_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_reservation(self):
+        response = self.client.post(
+            self.reservation_url,
+            self.reservation_data,
+            format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Reservation.objects.count(), 1)
+        self.assertEqual(Ticket.objects.count(), 2)
