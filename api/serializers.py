@@ -31,9 +31,7 @@ class PlaySerializer(serializers.ModelSerializer):
 
 
 class PlayListSerializer(PlaySerializer):
-    genres = serializers.SlugRelatedField(
-        many=True, read_only=True, slug_field="name"
-    )
+    genres = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
     actors = serializers.SlugRelatedField(
         many=True, read_only=True, slug_field="full_name"
     )
@@ -54,18 +52,15 @@ class PlayDetailSerializer(PlaySerializer):
 
 class PerformanceSerializer(serializers.ModelSerializer):
     show_time = serializers.DateTimeField(format="%d-%m-%Y %H:%M")
+
     class Meta:
         model = Performance
         fields = ("play", "theatre_hall", "show_time")
 
 
 class PerformanceListSerializer(PerformanceSerializer):
-    theatre_hall = serializers.SlugRelatedField(
-        read_only=True, slug_field="name"
-    )
-    play = serializers.SlugRelatedField(
-        read_only=True, slug_field="title"
-    )
+    theatre_hall = serializers.SlugRelatedField(read_only=True, slug_field="name")
+    play = serializers.SlugRelatedField(read_only=True, slug_field="title")
     tickets_available = serializers.IntegerField(read_only=True)
 
     class Meta:
@@ -77,10 +72,10 @@ class PerformanceDetailSerializer(PerformanceSerializer):
     theatre_hall = TheatreHallSerializer(read_only=True)
     play = PlaySerializer(read_only=True)
 
-
     class Meta:
         model = Performance
         fields = ("theatre_hall", "play", "show_time")
+
 
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:
@@ -90,9 +85,7 @@ class TicketSerializer(serializers.ModelSerializer):
     def validate(self, data):
         performance = data["performance"]
         if Ticket.objects.filter(
-                row=data["row"],
-                seat=data["seat"],
-                performance=performance
+            row=data["row"], seat=data["seat"], performance=performance
         ).exists():
             raise serializers.ValidationError(
                 f"Ticket with row-{data['row']}, seat-{data['seat']} "
@@ -101,10 +94,7 @@ class TicketSerializer(serializers.ModelSerializer):
 
         theatre_hall = performance.theatre_hall
         Ticket.validate_ticket(
-            data["row"],
-            data["seat"],
-            theatre_hall,
-            serializers.ValidationError
+            data["row"], data["seat"], theatre_hall, serializers.ValidationError
         )
         return data
 
@@ -144,6 +134,7 @@ class ReservationSerializer(serializers.ModelSerializer):
 
 class ReservationListSerializer(ReservationSerializer):
     tickets = TicketSerializer(many=True, read_only=True)
+
     class Meta:
         model = Reservation
         fields = ("id", "created_at", "tickets")

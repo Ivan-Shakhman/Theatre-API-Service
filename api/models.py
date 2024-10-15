@@ -53,7 +53,7 @@ class Actor(models.Model):
 
 def play_image_file_path(instance, filename):
     _, extension = os.path.splitext(filename)
-    filename =f"{slugify(instance.title)}-{uuid.uuid4()}{extension}"
+    filename = f"{slugify(instance.title)}-{uuid.uuid4()}{extension}"
     return os.path.join("uploads/movies/", filename)
 
 
@@ -76,7 +76,9 @@ class Play(models.Model):
 
 
 class Performance(models.Model):
-    play = models.ForeignKey(Play, related_name="performances", on_delete=models.CASCADE)
+    play = models.ForeignKey(
+        Play, related_name="performances", on_delete=models.CASCADE
+    )
     theatre_hall = models.ForeignKey(TheatreHall, on_delete=models.CASCADE)
     show_time = models.DateTimeField()
 
@@ -95,40 +97,45 @@ class Reservation(models.Model):
 class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
-    performance = models.ForeignKey(Performance, on_delete=models.CASCADE, related_name="tickets")
-    reservation = models.ForeignKey(Reservation, related_name="tickets", on_delete=models.CASCADE)
+    performance = models.ForeignKey(
+        Performance, on_delete=models.CASCADE, related_name="tickets"
+    )
+    reservation = models.ForeignKey(
+        Reservation, related_name="tickets", on_delete=models.CASCADE
+    )
 
     class Meta:
         constraints = [
             UniqueConstraint(
                 fields=[
-                    "row", "seat", "performance",
+                    "row",
+                    "seat",
+                    "performance",
                 ],
-                name="unique_ticket"
+                name="unique_ticket",
             )
         ]
 
     @staticmethod
     def validate_ticket(row, seat, theatre_hall, errors):
-        for ticket_attr_value, ticket_attr_name, theatre_hall_attr_name in[
+        for ticket_attr_value, ticket_attr_name, theatre_hall_attr_name in [
             (row, "row", "rows"),
             (seat, "seat", "seats_in_row"),
         ]:
-            count_attrs =getattr(theatre_hall, theatre_hall_attr_name)
+            count_attrs = getattr(theatre_hall, theatre_hall_attr_name)
             if not (1 <= ticket_attr_value <= count_attrs):
-                raise errors({
-                    ticket_attr_name: f"{ticket_attr_name} not in {count_attrs} "
-                    f"number must be in available range: "
-                    f"(1, {theatre_hall_attr_name}): "
-                    f"(1, {count_attrs})"
-                })
+                raise errors(
+                    {
+                        ticket_attr_name: f"{ticket_attr_name} not in {count_attrs} "
+                        f"number must be in available range: "
+                        f"(1, {theatre_hall_attr_name}): "
+                        f"(1, {count_attrs})"
+                    }
+                )
 
     def clean(self):
         Ticket.validate_ticket(
-            self.row,
-            self.seat,
-            self.performance.theatre_hall,
-            ValidationError
+            self.row, self.seat, self.performance.theatre_hall, ValidationError
         )
 
     def save(
