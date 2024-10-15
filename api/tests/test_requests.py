@@ -8,13 +8,7 @@ class TestWikipediaArticleRetrieval(unittest.TestCase):
     @patch("requests.get")
     def test_successful_article_retrieval(self, mock_get):
         mock_response = {
-            "query": {
-                "pages": {
-                    "123": {
-                        "extract": "This is a test article."
-                    }
-                }
-            }
+            "query": {"pages": {"123": {"extract": "This is a test article."}}}
         }
         mock_get.return_value.status_code = 200
         mock_get.return_value.json.return_value = mock_response
@@ -25,15 +19,7 @@ class TestWikipediaArticleRetrieval(unittest.TestCase):
 
     @patch("requests.get")
     def test_article_not_found(self, mock_get):
-        mock_response = {
-            "query": {
-                "pages": {
-                    "0": {
-                        "missing": ""
-                    }
-                }
-            }
-        }
+        mock_response = {"query": {"pages": {"0": {"missing": ""}}}}
         mock_get.return_value.status_code = 200
         mock_get.return_value.json.return_value = mock_response
 
