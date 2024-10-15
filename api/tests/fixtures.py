@@ -16,11 +16,7 @@ def user_fixture(**kwargs):
 
 
 def theatre_hall_fixture(**kwargs):
-    hall_set_up = {
-        "name": "Test theatre hall",
-        "rows": 10,
-        "seats_in_row": 10
-    }
+    hall_set_up = {"name": "Test theatre hall", "rows": 10, "seats_in_row": 10}
     hall_set_up.update(kwargs)
     return TheatreHall.objects.create(**hall_set_up)
 
@@ -44,10 +40,13 @@ def actor_fixture(**kwargs):
 
 def play_fixture(**kwargs):
     genres = genre_fixture(name="another genre"), genre_fixture()
-    actors = actor_fixture(
-        first_name="another first name",
-        last_name="another last name",
-    ), actor_fixture()
+    actors = (
+        actor_fixture(
+            first_name="another first name",
+            last_name="another last name",
+        ),
+        actor_fixture(),
+    )
     play_set_up = {
         "title": "Test play title",
         "description": "Test play description",
@@ -61,11 +60,12 @@ def play_fixture(**kwargs):
 
     return default
 
+
 def performance_fixture(**kwargs):
     performance_set_up = {
         "play": play_fixture(),
         "theatre_hall": theatre_hall_fixture(),
-        "show_time": "2023-10-14 20:00"
+        "show_time": "2023-10-14 20:00",
     }
     performance_set_up.update(kwargs)
     return Performance.objects.create(**performance_set_up)
