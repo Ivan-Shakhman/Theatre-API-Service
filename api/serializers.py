@@ -66,15 +66,17 @@ class PerformanceListSerializer(PerformanceSerializer):
     play = serializers.SlugRelatedField(
         read_only=True, slug_field="title"
     )
+    tickets_available = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Performance
-        fields = ("play", "theatre_hall", "show_time")
+        fields = ("play", "theatre_hall", "show_time", "tickets_available")
 
 
 class PerformanceDetailSerializer(PerformanceSerializer):
     theatre_hall = TheatreHallSerializer(read_only=True)
     play = PlaySerializer(read_only=True)
+
 
     class Meta:
         model = Performance

@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.db.models import F, Count
 from django.shortcuts import render
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
@@ -130,7 +131,16 @@ class PerformanceViewSet(
     mixins.RetrieveModelMixin,
     GenericViewSet
 ):
-    queryset = Performance.objects.select_related("theatre_hall", "play")
+    queryset = (
+        Performance.objects.all()
+        .select_related("play", "theatre_hall")
+        .annotate(
+            tickets_available=(
+                    F("theatre_hall__rows") * F("theatre_hall__seats_in_row")
+                    - Count("tickets")
+            )
+        )
+    )
     serializer_class = PerformanceSerializer
     pagination_class = PerformancePagination
 
