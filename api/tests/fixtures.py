@@ -65,7 +65,7 @@ def performance_fixture(**kwargs):
     performance_set_up = {
         "play": play_fixture(),
         "theatre_hall": theatre_hall_fixture(),
-        "show_time": "2024-10-14-22-06"
+        "show_time": "2023-10-14 20:00"
     }
     performance_set_up.update(kwargs)
     return Performance.objects.create(**performance_set_up)
