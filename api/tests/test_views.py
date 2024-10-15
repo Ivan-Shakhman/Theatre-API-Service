@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
@@ -5,7 +7,7 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from api.models import Genre, Actor, TheatreHall, Play
+from api.models import Genre, Actor, TheatreHall, Play, Performance
 from api.tests.fixtures import genre_fixture, actor_fixture, theatre_hall_fixture, play_fixture
 
 PLAY_URL = reverse("api:play-list")
@@ -114,5 +116,36 @@ class PlayViewSetTest(TestCase):
         response = self.client.post(self.list_url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Play.objects.count(), 2)
+
+
+class PerformanceViewSetTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_superuser(
+            "test@test.com",
+            "testpass",
+        )
+        self.client.force_authenticate(self.user)
+        self.play = play_fixture()
+        self.theatre_hall = theatre_hall_fixture()
+        self.performance = Performance.objects.create(
+            play=self.play,
+            theatre_hall=self.theatre_hall,
+            show_time=datetime.now()
+        )
+        self.list_url = reverse("api:performance-list")
+        self.detail_url = reverse(
+            "api:performance-detail",
+            args=[self.performance.id]
+        )
+
+    def test_list_performances(self):
+        response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieve_performance(self):
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["play"]["title"], "Test play title")
 
 
