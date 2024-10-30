@@ -1,13 +1,10 @@
-import os
-import uuid
-
 from django.conf import settings
 from django.db import models
 from django.db.models import UniqueConstraint
-from django.utils.text import slugify
 from rest_framework.exceptions import ValidationError
 
 from theatre.requests import get_wikipedia_article
+from theatre.utils import play_image_file_path
 
 
 class TheatreHall(models.Model):
@@ -49,12 +46,6 @@ class Actor(models.Model):
 
     def __str__(self):
         return self.full_name
-
-
-def play_image_file_path(instance, filename):
-    _, extension = os.path.splitext(filename)
-    filename = f"{slugify(instance.title)}-{uuid.uuid4()}{extension}"
-    return os.path.join("uploads/movies/", filename)
 
 
 class Play(models.Model):
