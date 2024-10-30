@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import os
 from datetime import timedelta
+from os import environ
 from pathlib import Path
 
 from django.conf.global_settings import MEDIA_URL
@@ -27,7 +28,7 @@ MEDIA_URL = "/media/"
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-l@m)h(@fpw_iy%m43-5ozs*huj4dkwc(b2)+z#&dmu)_b_z8ke"
+SECRET_KEY = environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
