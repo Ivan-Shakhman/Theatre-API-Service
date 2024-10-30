@@ -51,7 +51,7 @@ python manage.py runserver # http://127.0.0.1:8000/
 git clone https://github.com/Ivan-Shakhman/Theatre-API-Service
 cd airport-service
 ```
-2. Create .env file and set up environment variables
+2. Create .env file and set up environment variables (use .env.sample with your credentials)
 ```shell
 DATABASE_ENGINE=postgresql
 POSTGRES_PASSWORD=theatre
