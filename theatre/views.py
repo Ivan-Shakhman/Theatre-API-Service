@@ -17,6 +17,7 @@ from theatre.paginations import (
     PerformancePagination,
     ReservationPagination,
 )
+from theatre.requests import get_wikipedia_article
 from theatre.serializers import (
     GenreSerializer,
     ActorSerializer,
@@ -127,6 +128,16 @@ class PlayViewSet(
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        if not instance.wikipedia_article:
+            instance.wikipedia_article = get_wikipedia_article(instance.title)
+            instance.save()
+
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 
 class PerformanceViewSet(

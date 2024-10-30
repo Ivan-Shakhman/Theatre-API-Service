@@ -54,6 +54,7 @@ class Play(models.Model):
     image = models.ImageField(upload_to=play_image_file_path, null=True)
     genres = models.ManyToManyField(Genre, related_name="genres")
     actors = models.ManyToManyField(Actor, related_name="actors")
+    wikipedia_article = models.TextField(null=True, blank=True)
 
     class Meta:
         ordering = ("title",)
