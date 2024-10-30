@@ -1,6 +1,5 @@
 from django.db import transaction
 from rest_framework import serializers
-from rest_framework.generics import get_object_or_404
 
 from theatre.models import (
     TheatreHall,
@@ -39,9 +38,15 @@ class PlaySerializer(serializers.ModelSerializer):
 
 
 class PlayListSerializer(PlaySerializer):
-    genres = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
+    genres = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field="name"
+    )
     actors = serializers.SlugRelatedField(
-        many=True, read_only=True, slug_field="full_name"
+        many=True,
+        read_only=True,
+        slug_field="full_name"
     )
 
     class Meta:
@@ -55,7 +60,14 @@ class PlayDetailSerializer(PlaySerializer):
 
     class Meta:
         model = Play
-        fields = ("title", "description", "image", "genres", "actors", "wiki_article")
+        fields = (
+            "title",
+            "description",
+            "image",
+            "genres",
+            "actors",
+            "wiki_article"
+        )
 
 
 class PerformanceSerializer(serializers.ModelSerializer):
@@ -93,7 +105,9 @@ class TicketSerializer(serializers.ModelSerializer):
     def validate(self, data):
         performance = data["performance"]
         if Ticket.objects.filter(
-            row=data["row"], seat=data["seat"], performance=performance
+            row=data["row"],
+            seat=data["seat"],
+            performance=performance
         ).exists():
             raise serializers.ValidationError(
                 f"Ticket with row-{data['row']}, seat-{data['seat']} "
@@ -102,7 +116,10 @@ class TicketSerializer(serializers.ModelSerializer):
 
         theatre_hall = performance.theatre_hall
         Ticket.validate_ticket(
-            data["row"], data["seat"], theatre_hall, serializers.ValidationError
+            data["row"],
+            data["seat"],
+            theatre_hall,
+            serializers.ValidationError
         )
         return data
 
