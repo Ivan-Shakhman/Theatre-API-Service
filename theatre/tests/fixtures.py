@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 
-from api.models import TheatreHall, Genre, Actor, Play, Performance, Reservation
+from theatre.models import TheatreHall, Genre, Actor, Play, Performance, Reservation
 
 
 def user_fixture(**kwargs):

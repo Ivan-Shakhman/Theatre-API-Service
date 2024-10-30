@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from api.models import (
+from theatre.models import (
     TheatreHall,
     Genre,
     Actor,

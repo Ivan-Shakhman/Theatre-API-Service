@@ -6,8 +6,8 @@ from django.core.exceptions import ValidationError as ValidationErrorCore
 from rest_framework.exceptions import ValidationError
 from rest_framework.test import APIClient
 
-from api.models import Ticket, TheatreHall, Performance, Reservation
-from api.tests.fixtures import (
+from theatre.models import Ticket, TheatreHall, Performance, Reservation
+from theatre.tests.fixtures import (
     user_fixture,
     theatre_hall_fixture,
     genre_fixture,

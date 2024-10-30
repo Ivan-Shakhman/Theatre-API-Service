@@ -7,7 +7,7 @@ from django.db.models import UniqueConstraint
 from django.utils.text import slugify
 from rest_framework.exceptions import ValidationError
 
-from api.requests import get_wikipedia_article
+from theatre.requests import get_wikipedia_article
 
 
 class TheatreHall(models.Model):

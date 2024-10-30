@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.test import APITestCase, APIClient
-from api.models import TheatreHall, Play, Actor, Genre, Performance, Ticket, Reservation
-from api.serializers import (
+from theatre.models import TheatreHall, Play, Actor, Genre, Performance, Ticket, Reservation
+from theatre.serializers import (
     TheatreHallSerializer,
     ActorSerializer,
     GenreSerializer,
@@ -11,7 +11,7 @@ from api.serializers import (
     TicketSerializer,
     ReservationSerializer,
 )
-from api.tests.fixtures import (
+from theatre.tests.fixtures import (
     theatre_hall_fixture,
     genre_fixture,
     actor_fixture,

@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("api", "0006_alter_actor_options_alter_genre_options_and_more"),
+        ("theatre", "0006_alter_actor_options_alter_genre_options_and_more"),
     ]
 
     operations = [
@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="tickets",
-                to="api.performance",
+                to="theatre.performance",
             ),
         ),
     ]

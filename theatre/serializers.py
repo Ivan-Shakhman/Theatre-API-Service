@@ -2,7 +2,7 @@ from django.db import transaction
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
-from api.models import TheatreHall, Play, Actor, Genre, Performance, Ticket, Reservation
+from theatre.models import TheatreHall, Play, Actor, Genre, Performance, Ticket, Reservation
 
 
 class TheatreHallSerializer(serializers.ModelSerializer):

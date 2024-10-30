@@ -10,14 +10,14 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from api.models import Genre, Actor, TheatreHall, Play, Performance, Reservation
-from api.paginations import (
+from theatre.models import Genre, Actor, TheatreHall, Play, Performance, Reservation
+from theatre.paginations import (
     PlayPagination,
     ActorPagination,
     PerformancePagination,
     ReservationPagination,
 )
-from api.serializers import (
+from theatre.serializers import (
     GenreSerializer,
     ActorSerializer,
     TheatreHallSerializer,

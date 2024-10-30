@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255)),
-                ('play', models.ManyToManyField(related_name='genres', to='api.play')),
+                ('play', models.ManyToManyField(related_name='genres', to='theatre.play')),
             ],
         ),
         migrations.CreateModel(
@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('first_name', models.CharField(max_length=255)),
                 ('last_name', models.CharField(max_length=255)),
-                ('play', models.ManyToManyField(related_name='actors', to='api.play')),
+                ('play', models.ManyToManyField(related_name='actors', to='theatre.play')),
             ],
         ),
         migrations.CreateModel(
@@ -61,8 +61,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('show_time', models.DateTimeField()),
-                ('play', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='performances', to='api.play')),
-                ('TheatreHall', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.theatrehall')),
+                ('play', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='performances', to='theatre.play')),
+                ('TheatreHall', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='theatre.theatrehall')),
             ],
         ),
         migrations.CreateModel(
@@ -71,8 +71,8 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('row', models.IntegerField()),
                 ('seat', models.IntegerField()),
-                ('performance', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.performance')),
-                ('reservation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.reservation')),
+                ('performance', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='theatre.performance')),
+                ('reservation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='theatre.reservation')),
             ],
         ),
     ]

@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0001_initial'),
+        ('theatre', '0001_initial'),
     ]
 
     operations = [
@@ -17,6 +17,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='play',
             name='genre',
-            field=models.ManyToManyField(related_name='genres', to='api.genre'),
+            field=models.ManyToManyField(related_name='genres', to='theatre.genre'),
         ),
     ]

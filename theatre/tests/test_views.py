@@ -7,15 +7,15 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from api.models import Genre, Actor, TheatreHall, Play, Performance, Reservation, Ticket
-from api.tests.fixtures import (
+from theatre.models import Genre, Actor, TheatreHall, Play, Performance, Reservation, Ticket
+from theatre.tests.fixtures import (
     genre_fixture,
     actor_fixture,
     theatre_hall_fixture,
     play_fixture,
 )
 
-PLAY_URL = reverse("api:play-list")
+PLAY_URL = reverse("theatre:play-list")
 
 
 class GenreViewSetTest(TestCase):
@@ -27,8 +27,8 @@ class GenreViewSetTest(TestCase):
         )
         self.client.force_authenticate(self.user)
         self.genre = genre_fixture()
-        self.list_url = reverse("api:genre-list")
-        self.create_url = reverse("api:genre-list")
+        self.list_url = reverse("theatre:genre-list")
+        self.create_url = reverse("theatre:genre-list")
 
     def test_list_genres(self):
         response = self.client.get(self.list_url)
@@ -50,8 +50,8 @@ class ActorViewSetTest(TestCase):
         )
         self.client.force_authenticate(self.user)
         self.actor = actor_fixture()
-        self.list_url = reverse("api:actor-list")
-        self.create_url = reverse("api:actor-list")
+        self.list_url = reverse("theatre:actor-list")
+        self.create_url = reverse("theatre:actor-list")
 
     def test_list_actors(self):
         response = self.client.get(self.list_url)
@@ -73,8 +73,8 @@ class TheatreHallViewSetTest(TestCase):
         )
         self.client.force_authenticate(self.user)
         self.theatre_hall = theatre_hall_fixture()
-        self.list_url = reverse("api:theatrehall-list")
-        self.create_url = reverse("api:theatrehall-list")
+        self.list_url = reverse("theatre:theatrehall-list")
+        self.create_url = reverse("theatre:theatrehall-list")
 
     def test_list_theatre_halls(self):
         response = self.client.get(self.list_url)
@@ -99,8 +99,8 @@ class PlayViewSetTest(TestCase):
         self.actor = actor_fixture()
         self.play = play_fixture()
 
-        self.list_url = reverse("api:play-list")
-        self.detail_url = reverse("api:play-detail", args=[self.play.id])
+        self.list_url = reverse("theatre:play-list")
+        self.detail_url = reverse("theatre:play-detail", args=[self.play.id])
 
     def test_list_plays(self):
         response = self.client.get(self.list_url)
@@ -136,8 +136,8 @@ class PerformanceViewSetTest(TestCase):
         self.performance = Performance.objects.create(
             play=self.play, theatre_hall=self.theatre_hall, show_time=datetime.now()
         )
-        self.list_url = reverse("api:performance-list")
-        self.detail_url = reverse("api:performance-detail", args=[self.performance.id])
+        self.list_url = reverse("theatre:performance-list")
+        self.detail_url = reverse("theatre:performance-detail", args=[self.performance.id])
 
     def test_list_performances(self):
         response = self.client.get(self.list_url)
@@ -162,7 +162,7 @@ class ReservationViewSetTest(TestCase):
         self.performance = Performance.objects.create(
             play=self.play, theatre_hall=self.theatre_hall, show_time=datetime.now()
         )
-        self.reservation_url = reverse("api:reservation-list")
+        self.reservation_url = reverse("theatre:reservation-list")
         self.reservation_data = {
             "tickets": [
                 {"row": 1, "seat": 1, "performance": self.performance.id},

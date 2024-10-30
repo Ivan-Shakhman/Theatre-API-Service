@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0003_rename_genre_play_genres'),
+        ('theatre', '0003_rename_genre_play_genres'),
     ]
 
     operations = [
@@ -22,6 +22,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='play',
             name='actors',
-            field=models.ManyToManyField(related_name='actors', to='api.actor'),
+            field=models.ManyToManyField(related_name='actors', to='theatre.actor'),
         ),
     ]

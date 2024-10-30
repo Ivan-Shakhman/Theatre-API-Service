@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch
-from api.requests import get_wikipedia_article
+from theatre.requests import get_wikipedia_article
 
 
 class TestWikipediaArticleRetrieval(unittest.TestCase):

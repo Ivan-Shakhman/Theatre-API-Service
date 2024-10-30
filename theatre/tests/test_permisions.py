@@ -2,7 +2,7 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.test import APIRequestFactory, force_authenticate
 from user.models import User
 from django.test import TestCase
-from api.permissions import IsAdminOrIfAuthenticatedReadOnly
+from theatre.permissions import IsAdminOrIfAuthenticatedReadOnly
 
 
 class IsAdminOrIfAuthenticatedReadOnlyTests(TestCase):
