@@ -31,7 +31,7 @@ python manage.py migrate
 ```
 5. (Optional) Also you can load fixture data
 ```shell
-python manage.py loaddata data.json
+python manage.py loaddata test_data.json
 ```
 email: admin@gmail.com
 
