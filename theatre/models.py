@@ -71,7 +71,9 @@ class Performance(models.Model):
     play = models.ForeignKey(
         Play, related_name="performances", on_delete=models.CASCADE
     )
-    theatre_hall = models.ForeignKey(TheatreHall, on_delete=models.CASCADE)
+    theatre_hall = models.ForeignKey(
+        TheatreHall, related_name="performances", on_delete=models.CASCADE
+    )
     show_time = models.DateTimeField()
 
     class Meta:
@@ -80,7 +82,9 @@ class Performance(models.Model):
 
 class Reservation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name="reservations", on_delete=models.CASCADE
+    )
 
     class Meta:
         ordering = ("-created_at",)
