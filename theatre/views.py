@@ -147,7 +147,8 @@ class PerformanceViewSet(
     GenericViewSet,
 ):
     queryset = (
-        Performance.objects.all()
+        Performance
+        .objects
         .select_related("play", "theatre_hall")
         .annotate(
             tickets_available=(
