@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.db.models import F, Count
+from django.db.models.query.QuerySet import annotate
 from django.shortcuts import render
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
@@ -57,7 +58,6 @@ class PlayViewSet(
     mixins.RetrieveModelMixin,
     GenericViewSet,
 ):
-    queryset = Play.objects.prefetch_related("genres", "actors")
     serializer_class = PlaySerializer
     pagination_class = PlayPagination
 
@@ -73,7 +73,7 @@ class PlayViewSet(
         return [int(obj_id) for obj_id in param.split(",")]
 
     def get_queryset(self):
-        queryset = self.queryset.prefetch_related("genres", "actors")
+        queryset = super().get_queryset().prefetch_related("genres", "actors")
         title = self.request.query_params.get("title", None)
         genres = self.request.query_params.get("genres", None)
         actors = self.request.query_params.get("actors", None)
@@ -168,7 +168,17 @@ class PerformanceViewSet(
         return PerformanceSerializer
 
     def get_queryset(self):
-        query_set = self.queryset
+        query_set = (
+            super()
+            .get_queryset()
+            .select_related("play", "theatre_hall")
+            .annotate(
+                tickets_available=(
+                    F("theatre_hall__rows") * F("theatre_hall__seats_in_row")
+                    - Count("tickets")
+                )
+            )
+        )
         date = self.request.query_params.get("date")
         play_id = self.request.query_params.get("play")
         if date:
@@ -199,7 +209,6 @@ class PerformanceViewSet(
 class ReservationViewSet(
     mixins.ListModelMixin, mixins.CreateModelMixin, GenericViewSet
 ):
-    queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
     permission_classes = (IsAuthenticated,)
     pagination_class = ReservationPagination
@@ -210,7 +219,7 @@ class ReservationViewSet(
         return ReservationSerializer
 
     def get_queryset(self):
-        query_set = self.queryset.filter(user=self.request.user)
+        query_set = super().get_queryset().filter(user=self.request.user)
         return query_set
 
     def perform_create(self, serializer):
